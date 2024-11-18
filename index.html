@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>التحقق باستخدام الرقم المدني</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            direction: rtl;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #f4f4f4;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        label {
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            font-size: 18px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e7f7e7;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>تحقق من بيانات الطالب باستخدام الرقم المدني</h2>
+        <form id="civilIdForm">
+            <label for="civilId">أدخل الرقم المدني:</label>
+            <input type="text" id="civilId" name="civilId" required>
+            <button type="submit">تحقق</button>
+        </form>
+        
+        <div id="result" class="result" style="display:none;">
+            <h3>النتائج:</h3>
+            <pre id="resultText"></pre>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('civilIdForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // الحصول على الرقم المدني المدخل
+            var civilId = document.getElementById('civilId').value;
+            
+            // الرابط الخاص بـ Google Apps Script
+            var scriptUrl = 'https://script.google.com/macros/s/AKfycbyoq6dLdhZrYQiJIMOD8Wh68-d69xXTNLxzPRI0rtAO08kOZD_U0zXpDyTemh64REBP/exec'; // استبدل بهذا الرابط بعد نشر السكربت
+            
+            // إرسال الطلب إلى السكربت
+            fetch(scriptUrl + '?civilId=' + civilId)
+                .then(response => response.json())
+                .then(data => {
+                    var resultDiv = document.getElementById('result');
+                    var resultText = document.getElementById('resultText');
+
+                    if (data.error) {
+                        resultDiv.style.display = 'block';
+                        resultText.textContent = 'خطأ: ' + data.error;
+                    } else {
+                        resultDiv.style.display = 'block';
+                        resultText.textContent = JSON.stringify(data, null, 2);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        });
+    </script>
+</body>
+</html>
